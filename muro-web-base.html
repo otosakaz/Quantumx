@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muro Base</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    margin:0;
+}
+
+header{
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+textarea,input{
+    width:100%;
+    padding:8px;
+    margin-top:8px;
+    border-radius:5px;
+    border:1px solid #ccc;
+    box-sizing:border-box;
+}
+
+button{
+    margin-top:8px;
+    padding:8px 12px;
+    background:#0077cc;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.comment{
+    background:#f7f7f7;
+    padding:8px;
+    margin-top:8px;
+    border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Muro Web Base</h2>
+</header>
+
+<div class="container">
+
+<div class="card">
+    <h3>Nueva publicación</h3>
+    <textarea id="postText" placeholder="Escribe algo..."></textarea>
+    <button onclick="crearPost()">Publicar</button>
+</div>
+
+<div id="posts"></div>
+
+</div>
+
+<script>
+
+let posts = [];
+
+function crearPost(){
+    let texto = document.getElementById("postText").value;
+    if(texto === "") return;
+
+    posts.unshift({
+        texto: texto,
+        comentarios: []
+    });
+
+    document.getElementById("postText").value="";
+    render();
+}
+
+function comentar(postIndex){
+    let input = document.getElementById("comentario-"+postIndex);
+    if(input.value==="") return;
+
+    posts[postIndex].comentarios.push(input.value);
+    input.value="";
+    render();
+}
+
+function render(){
+    let contenedor=document.getElementById("posts");
+    contenedor.innerHTML="";
+
+    posts.forEach((post,i)=>{
+
+        let div=document.createElement("div");
+        div.className="card";
+
+        let comentariosHTML="";
+        post.comentarios.forEach(c=>{
+            comentariosHTML+=`<div class="comment">${c}</div>`;
+        });
+
+        div.innerHTML=`
+            <p>${post.texto}</p>
+
+            <input id="comentario-${i}" placeholder="Comentar...">
+            <button onclick="comentar(${i})">Comentar</button>
+
+            ${comentariosHTML}
+        `;
+
+        contenedor.appendChild(div);
+    });
+}
+
+</script>
+
+</body>
+</html>
